@@ -17,7 +17,7 @@ spec:
         - name: vector
           image: timberio/vector:0.46.1-debian
           command: ["vector"]
-          args: ["-c", "/etc/vector/vector.yaml", "--watch-config"]
+          args: ["-c", "ulimit -n 65536 && exec vector -c /etc/vector/vector.yaml --watch-config"]
           volumeMounts:
             - name: config
               mountPath: /etc/vector/
