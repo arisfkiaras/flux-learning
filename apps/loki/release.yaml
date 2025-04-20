@@ -14,7 +14,7 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: grafana
-        namespace: flux-system
+        namespace: loki
       interval: 12h
   # values: # https://github.com/grafana/loki/blob/main/production/helm/loki/values.yaml
   #   controller:
