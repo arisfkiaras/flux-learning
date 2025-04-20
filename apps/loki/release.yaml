@@ -1,0 +1,24 @@
+# https://grafana.com/docs/loki/latest/setup/install/helm/install-monolithic/
+# https://github.com/grafana/loki/tree/main/production/helm/loki
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: loki
+  namespace: loki
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: loki
+      version: "6.29.0"
+      sourceRef:
+        kind: HelmRepository
+        name: grafana
+        namespace: flux-system
+      interval: 12h
+  # values: # https://github.com/grafana/loki/blob/main/production/helm/loki/values.yaml
+  #   controller:
+  #     service:
+  #       type: "NodePort"
+  #   admissionWebhooks:
+  #     enabled: false
