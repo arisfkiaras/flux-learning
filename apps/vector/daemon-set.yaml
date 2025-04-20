@@ -16,3 +16,24 @@ spec:
       containers:
         - name: vector
           image: timberio/vector:0.46.1-debian
+          command: ["vector"]
+          args: ["-c", "/etc/vector/vector.yaml", "--watch-config"]
+          volumeMounts:
+            - name: config
+              mountPath: /etc/vector/
+              readOnly: true
+            - name: var-log
+              mountPath: /var/log/
+              readOnly: true
+          env:
+          - name: VECTOR_SELF_NODE_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: spec.nodeName
+      volumes:
+        - name: config
+          configMap:
+            name: vector-config
+        - name: var-log
+          hostPath:
+            path: /var/log/

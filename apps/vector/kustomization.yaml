@@ -4,3 +4,5 @@ namespace: vector
 resources:
   - namespace.yaml
   - daemon-set.yaml
+  - rbac.yaml
+  - config-map.yaml
