@@ -1,0 +1,65 @@
+# https://github.com/grafana/helm-charts/blob/main/charts/grafana/README.md
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: grafana
+  namespace: grafana
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: grafana
+      version: "8.12.1"
+      sourceRef:
+        kind: HelmRepository
+        name: grafana
+        namespace: loki
+      interval: 12h
+  values: # https://github.com/grafana/helm-charts/blob/main/charts/grafana/README.md
+    adminUser: demo
+    adminPassword: demo
+
+    persistence:
+      enabled: true
+      storageClassName: standard
+      accessModes:
+        - ReadWriteOnce
+      size: 5Gi
+      retain: true
+
+    datasources:
+      datasources.yaml:
+        apiVersion: 1
+        datasources:
+          - name: Loki
+            type: loki
+            access: proxy
+            url: http://loki.loki.svc.cluster.local:3100
+            jsonData:
+              httpHeaderName1: "X-Scope-OrgID"
+            secureJsonData:
+              httpHeaderValue1: "fake"
+
+    # https://community.grafana.com/t/how-to-upload-dashboards-as-json-files-to-kubernetes-via-helm/59731/2
+    dashboardProviders:
+      dashboardproviders.yaml:
+        apiVersion: 1
+        providers:
+          - name: 'default'
+            orgId: 1
+            folder: ''
+            type: file
+            disableDeletion: false
+            editable: true
+            options:
+              path: /var/lib/grafana/dashboards/default
+
+    # https://github.com/grafana/helm-charts/blob/main/charts/grafana/README.md#import-dashboards
+    dashboards:
+      default:
+        loki-logs:
+          gnetId: 18042
+          revision: 5
+          datasource:
+          - name: DS_LOKI
+            value: Loki
