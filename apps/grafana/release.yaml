@@ -69,7 +69,7 @@ spec:
             value: Loki
         node-exporter:
           gnetId: 1860
-          revision: 5
+          revision: 39
           datasource:
           - name: DS_PROMETHEUS
             value: Prometheus
