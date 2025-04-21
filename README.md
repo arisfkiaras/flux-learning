@@ -17,7 +17,9 @@ Will probably not work with vanilla cluster setup with kubeadm.
 Todo:
 - create script that will check token, check if storageclss is enabled, run flux bootstrap, print instruction on how to connect
 - Clean up. Move structure from my cluster to demo
-
+- Add overview of what is deployed, some screenshots of grafana
+- Add list of services including upstream documentation links, how to configure and how to access.
+- Add how to fix too many open files issue if it comes up.
 
 Nice to haves:
 - Install ingress so its easier through one proxy to access all the apps.

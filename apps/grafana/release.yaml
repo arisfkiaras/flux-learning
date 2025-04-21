@@ -73,3 +73,5 @@ spec:
           datasource:
           - name: DS_PROMETHEUS
             value: Prometheus
+          - name: DS_LOCALHOST
+            value: Prometheus
