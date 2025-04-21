@@ -43,10 +43,6 @@ spec:
             type: prometheus
             access: proxy
             url: http://prometheus-server.prometheus.svc.cluster.local:80
-            jsonData:
-              httpHeaderName1: "X-Scope-OrgID"
-            secureJsonData:
-              httpHeaderValue1: "fake"
 
     # https://community.grafana.com/t/how-to-upload-dashboards-as-json-files-to-kubernetes-via-helm/59731/2
     dashboardProviders:
@@ -71,3 +67,9 @@ spec:
           datasource:
           - name: DS_LOKI
             value: Loki
+        node-exporter:
+          gnetId: 1860
+          revision: 5
+          datasource:
+          - name: DS_PROMETHEUS
+            value: Prometheus
