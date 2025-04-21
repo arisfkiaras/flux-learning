@@ -39,6 +39,14 @@ spec:
               httpHeaderName1: "X-Scope-OrgID"
             secureJsonData:
               httpHeaderValue1: "fake"
+          - name: Prometheus
+            type: prometheus
+            access: proxy
+            url: http://prometheus-server.prometheus.svc.cluster.local:80
+            jsonData:
+              httpHeaderName1: "X-Scope-OrgID"
+            secureJsonData:
+              httpHeaderValue1: "fake"
 
     # https://community.grafana.com/t/how-to-upload-dashboards-as-json-files-to-kubernetes-via-helm/59731/2
     dashboardProviders:

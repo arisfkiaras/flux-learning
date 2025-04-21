@@ -21,4 +21,4 @@ data:
           container: "{{ kubernetes.container_name }}"
           pod: "{{ kubernetes.pod_name }}"
           stream: "{{ stream }}"
-        tenant_id: "fake"
+        tenant_id: "fake" # https://grafana.com/docs/loki/latest/operations/multi-tenancy/#manage-tenant-isolation
