@@ -10,9 +10,15 @@ data:
         type: kubernetes_logs # https://vector.dev/docs/reference/configuration/sources/kubernetes_logs/
 
     sinks:
-      console:
-        type: console
+      loki_sink:
+        type: loki # https://vector.dev/docs/reference/configuration/sinks/loki/
         inputs: [cluster_logs]
-        target: stdout
+        endpoint: "http://loki.loki.svc.cluster.local:3100/"
         encoding:
-          codec: json
+          codec: text
+        labels:
+          job: "vector"
+          container: "{{ kubernetes.container_name }}"
+          pod: "{{ kubernetes.pod_name }}"
+          stream: "{{ stream }}"
+        tenant_id: "fake"
