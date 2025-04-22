@@ -3,5 +3,4 @@ kind: Kustomization
 namespace: prometheus
 resources:
   - release.yaml
-  - repository.yaml
   - namespace.yaml
