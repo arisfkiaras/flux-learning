@@ -1,4 +1,3 @@
-# https://github.com/grafana/helm-charts/blob/main/charts/grafana/README.md
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
@@ -21,7 +20,6 @@ spec:
 
     persistence:
       enabled: true
-      storageClassName: standard
       accessModes:
         - ReadWriteOnce
       size: 5Gi
