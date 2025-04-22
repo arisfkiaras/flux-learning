@@ -3,5 +3,4 @@ kind: Kustomization
 namespace: loki
 resources:
   - release.yaml
-  - repository.yaml
   - namespace.yaml
