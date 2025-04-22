@@ -39,7 +39,7 @@ spec:
 
     minio:
       enabled: true
-          
+
     deploymentMode: SingleBinary
 
     singleBinary:
