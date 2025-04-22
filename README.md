@@ -22,6 +22,7 @@ Access to a kubernetes cluster with a default storage class.
 - [Minikube](https://minikube.sigs.k8s.io/docs/start/?arch=%2Flinux%2Fx86-64%2Fstable%2Fbinary+download)
 - [Rancher Desktop](https://rancherdesktop.io/)
 
+
 <details>
 <summary>For clusters without a default storage class:</summary>
 <br>
@@ -40,6 +41,28 @@ kubectl patch storageclass local-path -p '{"metadata": {"annotations":{"storagec
 ```
 
 </details>
+
+<details>
+<summary>For host machines with low number of file descriptors or inotify. (Too many open files related errors.)</summary>
+<br>
+
+1. Check your limits:
+
+```bash
+sudo sysctl fs.inotify.max_user_watches
+sudo sysctl fs.inotify.max_user_instances
+sudo ulimits -n
+```
+
+2. Increase limits (if needed):
+
+```bash
+sudo sysctl -w fs.inotify.max_user_watches=524288
+sudo sysctl -w fs.inotify.max_user_instances=512
+sudo ulimit -n 1048576
+```
+</details>
+
 
 ## How to bootstrap a cluster
 
