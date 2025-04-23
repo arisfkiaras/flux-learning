@@ -22,7 +22,7 @@ data:
                   }
                 }
     sinks:
-      loki_sink:
+      loki:
         type: loki # https://vector.dev/docs/reference/configuration/sinks/loki/
         inputs:
           - "remap_json"
@@ -35,3 +35,10 @@ data:
           pod: "{{ kubernetes.pod_name }}"
           stream: "{{ stream }}"
         tenant_id: "fake" # https://grafana.com/docs/loki/latest/operations/multi-tenancy/#manage-tenant-isolation
+      console:
+        type: console
+        inputs:
+          - "remap_json"
+        target: stdout
+        encoding:
+          codec: json
