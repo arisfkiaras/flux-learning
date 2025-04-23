@@ -26,7 +26,7 @@ It provisions
 <details>
 <summary>For clusters without a default storage class (kubeadm)</summary>
 <br>
-Minio and Grafana require a default storage class to be available in your cluster.
+Minio and Grafana require a default storage class to be configured in your cluster.<br>
 If you are on a bare mimimum setup, a storage class might be missing.
 <br><br>
 
@@ -53,7 +53,8 @@ kubectl patch storageclass local-path -p '{"metadata": {"annotations":{"storagec
 <details>
 <summary>For host machines with low limits of file descriptors or inotify. (Too many open files related errors.)</summary>
 <br>
-This monitoring stack is IO hungry. If you host machine has many processes running you might need to raise a few file descriptor limits.
+This monitoring stack is IO hungry.<br>
+If you host machine has many processes running you might need to raise a few limits.
 <br><br>
 
 1. Check your limits:
@@ -126,7 +127,7 @@ user: demo
 pass: demo
 ```
 
-You can browse the pre-installed dashboards or use the explore functionality of grafana, or create your own dashboards.
+You can now browse the pre-installed dashboards, use the explore functionality of grafana, or create your own dashboards.
 
 ## Example Dashboards
 #### Node Exporter full
@@ -180,7 +181,7 @@ You can browse the pre-installed dashboards or use the explore functionality of 
 
 Vector is deployed using a custom DaemonSet [apps/vector/daemon-set.yaml](./apps/vector/daemon-set.yaml)
 
-Sources and sinks are configured in a Config Map: [apps/vector/config-map.yaml](./apps/vector/config-map.yaml)
+Sources and sinks are configured in a Config Map [apps/vector/config-map.yaml](./apps/vector/config-map.yaml)
 
 The configuration was inspired by [Vector Helm charts](https://github.com/vectordotdev/helm-charts/blob/develop/charts/vector)
 
@@ -241,12 +242,12 @@ The following dashboards are also imported automatically:
 - [Helm Installation Documentation](https://grafana.com/docs/grafana/latest/setup-grafana/installation/helm/)
 
 
-## Possible Improvements
-- Create setup.sh script that will check if users has configured token, has access to cluster, ulimts, etc.
+## Planned Improvements
+- Create setup.sh script that will check if user has configured github token, has access to cluster, ulimts, etc.
 - Introduce multiple cluster setup, kustomize kubeadm clusters with auto-provision storage.
 - Introduce an ingress for easier resources access.
-- Add an nginx demo app and nginx collector/dashboard
-- Add transform/filter functionality on Vector level
+- Add an nginx demo app and nginx collector/dashboard.
+- Add transform/filter functionality on Vector level.
 
 <!-- 
 - add nodeport for grafana
