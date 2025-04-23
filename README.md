@@ -75,38 +75,39 @@ sudo ulimit -n 1048576
 </details>
 
 
-## How to bootstrap a cluster
+## How to bootstrap cluster
 
-**1. Generate a GitHub Personal Access Token**
-  - Go to [https://github.com/settings/tokens](https://github.com/settings/tokens)
-  - Select **repo** scope
-  - Click Generate token at buttom of the page
-
-**2. Configure token as an environment variable**
+**1. Clone the repository**
 
 ```bash
-export GITHUB_TOKEN=your_token...
+git clone https://github.com/arisfkiaras/flux-learning.git
+cd flux-learning
 ```
 
-**3. Call flux to bootstrap the cluster**
+**2. Install Flux components**
 
 ```bash
-flux bootstrap github \
-    --token-auth  \
-    --owner=arisfkiaras  \
-    --repository=flux-learning  \
-    --branch=main  \
-    --path=clusters/my-cluster \
-    --personal
+flux install
 ```
 
-**4. Wait for flux**
-- If everything was installed correctly you should see 
+**3. Apply the sync configuration**
+
 ```bash
-✔ all components are healthy
+kubectl apply -f clusters/my-cluster/flux-system/gotk-sync.yaml
 ```
 
-**5. Check status of all pods**
+**4. Check status**
+Check git source was configured correctly
+```bash
+flux get sources git
+```
+
+Check kustomizations. Wait a minute or two until all kustomizations have READY=True
+```bash
+flux get kustomizations -w
+```
+
+Check status of all pods
 ```bash
 kubectl get pods -A
 ```
@@ -243,13 +244,7 @@ The following dashboards are also imported automatically:
 
 
 ## Planned Improvements
-- Create setup.sh script that will check if user has configured github token, has access to cluster, ulimts, etc.
 - Introduce multiple cluster setup, kustomize kubeadm clusters with auto-provision storage.
 - Introduce an ingress for easier resources access.
 - Add an nginx demo app and nginx collector/dashboard.
 - Add transform/filter functionality on Vector level.
-
-<!-- 
-- add nodeport for grafana
-- after repo is public, change flux bootstrap documentation
-- -->
