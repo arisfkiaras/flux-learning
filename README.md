@@ -112,6 +112,15 @@ Check status of all pods
 kubectl get pods -A
 ```
 
+<!-- Debug
+```bash
+flux suspend kustomization apps --namespace=flux-system
+kubectl leeroy
+flux resume kustomization apps --namespace=flux-system
+git push
+flux reconcile kustomization apps --namespace=flux-system
+``` -->
+
 ## How to access Grafana
 
 **Forward the Grafana service to your local machine**
@@ -191,6 +200,8 @@ The configuration was inspired by [Vector Helm charts](https://github.com/vector
 
 - [Kubernetes Logs Source Documentation](https://vector.dev/docs/reference/configuration/sources/kubernetes_logs/)
 - [Loki Sink Documentation](https://vector.dev/docs/reference/configuration/sinks/loki/)
+- [Using Vector locally](https://vector.dev/docs/setup/quickstart/)
+- [Vector VRL](https://vector.dev/docs/reference/vrl/)
 
 ### Loki
 
@@ -247,4 +258,4 @@ The following dashboards are also imported automatically:
 - Introduce multiple cluster setup, kustomize kubeadm clusters with auto-provision storage.
 - Introduce an ingress for easier resources access.
 - Add an nginx demo app and nginx collector/dashboard.
-- Add transform/filter functionality on Vector level.
+- Improve vector.yaml configuration, if possible split it into multiple files to manage better different log producers.

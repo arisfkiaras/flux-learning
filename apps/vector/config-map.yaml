@@ -9,10 +9,23 @@ data:
       cluster_logs:
         type: kubernetes_logs # https://vector.dev/docs/reference/configuration/sources/kubernetes_logs/
 
+    transforms: # https://vector.dev/docs/reference/vrl/
+      remap_json:
+        inputs:
+          - "cluster_logs"
+        type: "remap"
+        source: |
+                if .kubernetes.container_name == "etcd" {
+                  structured, err = parse_json(.message)
+                  if err == null && structured.msg !=null {
+                    .message = structured.msg
+                  }
+                }
     sinks:
       loki_sink:
         type: loki # https://vector.dev/docs/reference/configuration/sinks/loki/
-        inputs: [cluster_logs]
+        inputs:
+          - "remap_json"
         endpoint: "http://loki.loki.svc.cluster.local:3100/"
         encoding:
           codec: text
