@@ -12,11 +12,11 @@ It provisions
 
 ## Prerequisites
 
-Flux cli is installed. https://fluxcd.io/flux/installation/
+- Flux cli is installed. https://fluxcd.io/flux/installation/
 
-Access to a kubernetes cluster with a default storage class.
+- Access to a kubernetes cluster with a default storage class.
 
-**Configuration has been tested with**
+#### Configuration has been tested with
 
 - [Kind](https://kind.sigs.k8s.io/docs/user/quick-start/)
 - [Minikube](https://minikube.sigs.k8s.io/docs/start/?arch=%2Flinux%2Fx86-64%2Fstable%2Fbinary+download)
@@ -24,17 +24,25 @@ Access to a kubernetes cluster with a default storage class.
 
 
 <details>
-<summary>For clusters without a default storage class:</summary>
+<summary>For clusters without a default storage class (kubeadm)</summary>
 <br>
+Minio and Grafana require a default storage class to be available in your cluster.
+If you are on a bare mimimum setup, a storage class might be missing.
+<br><br>
 
-1. Install local-path-provisioner by [Rancher](https://github.com/rancher/local-path-provisioner)
+1. Check if you already have a storageclass
+```bash
+kubectl get storageclasses.storage.k8s.io
+```
+
+2. Install local-path-provisioner by [Rancher](https://github.com/rancher/local-path-provisioner)
 
 
 ```bash
 kubectl apply -f https://raw.githubusercontent.com/rancher/local-path-provisioner/master/deploy/local-path-storage.yaml
 ```
 
-2. Add annotation to set it as default storageclass
+3. Add annotation to set it as default storageclass
 
 ```bash
 kubectl patch storageclass local-path -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
@@ -43,8 +51,10 @@ kubectl patch storageclass local-path -p '{"metadata": {"annotations":{"storagec
 </details>
 
 <details>
-<summary>For host machines with low number of file descriptors or inotify. (Too many open files related errors.)</summary>
+<summary>For host machines with low limits of file descriptors or inotify. (Too many open files related errors.)</summary>
 <br>
+This monitoring stack is IO hungry. If you host machine has many processes running you might need to raise a few file descriptor limits.
+<br><br>
 
 1. Check your limits:
 
@@ -66,18 +76,18 @@ sudo ulimit -n 1048576
 
 ## How to bootstrap a cluster
 
-**Generate a GitHub Personal Access Token**
+**1. Generate a GitHub Personal Access Token**
   - Go to [https://github.com/settings/tokens](https://github.com/settings/tokens)
   - Select **repo** scope
   - Click Generate token at buttom of the page
 
-**Configure token as an environment variable**
+**2. Configure token as an environment variable**
 
 ```bash
 export GITHUB_TOKEN=your_token...
 ```
 
-**Call flux to bootstrap the cluster**
+**3. Call flux to bootstrap the cluster**
 
 ```bash
 flux bootstrap github \
@@ -89,13 +99,16 @@ flux bootstrap github \
     --personal
 ```
 
-**Wait for flux**
+**4. Wait for flux**
 - If everything was installed correctly you should see 
 ```bash
 ✔ all components are healthy
 ```
 
-- Execute ```kubectl get pods -A``` to see the status of individual pods. 
+**5. Check status of all pods**
+```bash
+kubectl get pods -A
+```
 
 ## How to access Grafana
 
@@ -113,7 +126,15 @@ user: demo
 pass: demo
 ```
 
-You can browse the pre-installed dashboards or use the explore functionality of grafana, or create yoour own dashboards.
+You can browse the pre-installed dashboards or use the explore functionality of grafana, or create your own dashboards.
+
+## Example Dashboards
+#### Node Exporter full
+![Node Exporter Dashboard](docs/grafana_node_exporter.png)
+
+#### Logging Dashboard via Loki
+![Logging Dashboard](docs/grafana_logs.png)
+
 
 ## Repository structure
 
@@ -145,6 +166,7 @@ You can browse the pre-installed dashboards or use the explore functionality of 
 │       │   ├── gotk-sync.yaml
 │       │   └── kustomization.yaml
 │       └── repositories.yaml         # Tells flux to keep track of ./repositories
+├── docs                              # Contains pictures for README.md
 ├── README.md
 └── repositories                      # Contains the helm repositories shared across apps.
     ├── grafana.yaml
@@ -152,21 +174,23 @@ You can browse the pre-installed dashboards or use the explore functionality of 
     └── prometheus-community.yaml
 ```
 
-## Vector
+## Tool Specific Documentation
 
-To deploy Vector a custom DaemonSet was created [apps/vector/daemon-set.yaml](./apps/vector/daemon-set.yaml)
+### Vector
+
+Vector is deployed using a custom DaemonSet [apps/vector/daemon-set.yaml](./apps/vector/daemon-set.yaml)
 
 Sources and sinks are configured in a Config Map: [apps/vector/config-map.yaml](./apps/vector/config-map.yaml)
 
 The configuration was inspired by [Vector Helm charts](https://github.com/vectordotdev/helm-charts/blob/develop/charts/vector)
 
 
-### Useful links
+#### Useful links
 
 - [Kubernetes Logs Source Documentation](https://vector.dev/docs/reference/configuration/sources/kubernetes_logs/)
 - [Loki Sink Documentation](https://vector.dev/docs/reference/configuration/sinks/loki/)
 
-## Loki
+### Loki
 
 Loki is installed using the [Loki Helm chart](https://github.com/grafana/loki/blob/main/production/helm/loki) by Grafana. 
 
@@ -176,14 +200,14 @@ The Monolithic - Single Repilca setup was chosen.
 
 Helm Values can be configured in [apps/loki/release.yaml](./apps/loki/release.yaml)
 
-### Useful Links
+#### Useful Links
 
 - [Loki Helm Installation Guide](https://grafana.com/docs/loki/latest/setup/install/helm/)
 - [Loki Helm Chart Repository](https://github.com/grafana/loki/tree/main/production/helm/loki)
 - [Loki Helm Chart Default Values](https://github.com/grafana/loki/blob/main/production/helm/loki/values.yaml)
 
 
-## Prometheus
+### Prometheus
 
 Prometheus is installed using the [prometheus-community](https://github.com/prometheus-community/helm-charts/tree/main/charts/prometheus) helm chart.
 
@@ -194,20 +218,20 @@ The installation includes:
 - **kube-state-metrics exporter** for kubernetes internal metrics like pod status.
 - **node_exporter** for host machine metrics such as cpu usage.
 
-### Useful Links
+#### Useful Links
 
 - [Prometheus Helm Chart](https://github.com/prometheus-community/helm-charts/tree/main/charts/prometheus/)
 - [Prometheus Documentation](https://prometheus.io/docs/prometheus/latest/getting_started/)
 
 
-## Grafana
+### Grafana
 Grafana is installed using the Grafana [Helm chart](https://github.com/grafana/helm-charts/blob/main/charts/grafana/README.md).
 
 Helm values can be configured in [apps/grafana/release.yaml](./apps/grafana/release.yaml)
 
-Loki and Prometheus datasources are automatically configured.
+Loki and Prometheus datasources are configured automatically.
 
-The following dashboards are also imported automatically from grafana.com:
+The following dashboards are also imported automatically:
 - [Node Exporter Full](https://grafana.com/grafana/dashboards/1860-node-exporter-full/)
 - [Logging Dashboard via Loki v2](https://grafana.com/grafana/dashboards/18042-logging-dashboard-via-loki-v2/)
 
@@ -222,13 +246,9 @@ The following dashboards are also imported automatically from grafana.com:
 - Introduce multiple cluster setup, kustomize kubeadm clusters with auto-provision storage.
 - Introduce an ingress for easier resources access.
 - Add an nginx demo app and nginx collector/dashboard
-
+- Add transform/filter functionality on Vector level
 
 <!-- 
-- Add overview of what is deployed, some screenshots of grafana
-- Add list of services including upstream documentation links, how to configure and how to access.
-- Add how to fix too many open files issue if it comes up.
-Nice to haves:
-- Install ingress so its easier through one proxy to access all the apps.
-- Add a few dashboards, provide better default grafana setup so user ends up directlyon dashboards.
-- Add an nginx demo app and collect nginx metrics -->
+- add nodeport for grafana
+- after repo is public, change flux bootstrap documentation
+- -->
