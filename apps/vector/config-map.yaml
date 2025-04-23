@@ -15,7 +15,7 @@ data:
         inputs: [cluster_logs]
         endpoint: "http://loki.loki.svc.cluster.local:3100/"
         encoding:
-          codec: text
+          codec: json
         labels:
           job: "vector"
           container: "{{ kubernetes.container_name }}"
