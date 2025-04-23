@@ -97,6 +97,7 @@ kubectl apply -f clusters/my-cluster/flux-system/gotk-sync.yaml
 ```
 
 **4. Check status**
+
 Check git source was configured correctly
 ```bash
 flux get sources git
